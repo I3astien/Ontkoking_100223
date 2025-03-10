@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Recepten/Home Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @font-face {
+          font-family: "Georgia Pro Bold";
+          src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Bold.ttf') }}") format("truetype");
+          font-weight: normal;
+          font-style: normal;
+      }
+  
+      @font-face {
+          font-family: "Georgia Pro Regular";
+          src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Regular.ttf') }}") format("truetype");
+          font-weight: normal;
+          font-style: normal;
+      }
+  
+      body {
+          background-image: url("{{ url_for('static', filename='images/backgrounds/b2.png') }}");
+          background-size: cover;
+          background-position: center;
+          overflow-y: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+      }
+  
+      body::-webkit-scrollbar {
+          display: none;
+      }
+  
+      .recipe-grid-container {
+          max-height: 500px; /* Adjust this value as needed */
+          overflow-y: auto;
+          overflow-x: auto; /* Enable horizontal scrolling */
+      }
+  
+      .recipe-grid {
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+          gap: 1rem;
+          padding: 0 0.5rem;
+          width: max-content; /* Ensures the grid is wide enough to allow horizontal scrolling */
+      }
+  
+      @media (min-width: 640px) {
+          .recipe-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+      }
+  
+      @media (min-width: 768px) {
+          .recipe-grid {
+              grid-template-columns: repeat(5, 1fr);
+          }
+      }
+  
+      .recipe-card {
+          background-color: black;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          position: relative;
+          height: 448px;
+          width: 100%;
+          transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for hover effect */
+      }
+  
+      .recipe-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: opacity 0.3s ease; /* Smooth transition for image */
+      }
+  
+      .recipe-card .overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: linear-gradient(180deg, transparent, rgba(39, 49, 46, 0.8));
+          padding: 1rem;
+          color: white;
+          transition: transform 0.3s ease; /* Smooth transition for overlay */
+          z-index: 1; /* Make sure overlay stays on top */
+      }
+  
+      /* Hover effect on the entire card */
+      .recipe-card:hover {
+          transform: scale(1.05); /* Slight zoom effect */
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Shadow effect on hover */
+      }
+  
+      /* Apply scaling to overlay as well */
+      .recipe-card:hover .overlay {
+          transform: scale(1.05); /* Ensure the overlay scales with the card */
+      }
+  
+      .recipe-title {
+          font-size: 1.125rem;
+          font-weight: bold;
+      }
+  
+      .recipe-time {
+          font-size: 0.875rem;
+      }
+  
+      .recipe-card.hidden {
+          display: none;
+      }
+  
+      /* Ensure no overflow from the scaling */
+      .recipe-grid {
+          overflow: hidden;
+      }
+  
+      /* Dropdown styling */
+      #dietDropdownMenu {
+          display: none;
+          position: absolute;
+          max-height: 200px;
+          overflow-y: auto;
+          transition: all 0.3s ease;
+      }
+  
+      /* Show the dropdown when active */
+      #dietDropdownMenu.active {
+          display: block;
+      }
+  
+      .diet-filter-btn {
+          transition: background-color 0.2s;
+      }
+  </style>
+
+</head>
+<body class="bg-gray-100">
+    <header class="flex justify-between items-center p-4 pb-0">
+        <div class="flex items-center space-x-8">
+            <h1 class="text-4xl font-bold text-[#fbfbfb]">NOURISH</h1>
+            <a href="/add_recipe" class="px-4 py-2 rounded-lg bg-[#27312e] text-white transition duration-300 hover:bg-[#4e1616]">Add Recipe</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a id="profileBtn" href="/profiel" class="px-4 py-2 rounded-lg text-white bg-[#27312e] transition duration-300 hover:bg-[#4e1616]">Profile</a>
+        </div>
+    </header>
+
+    <main class="p-4 pb-20">
+        <section>
+            <hr class="border-b border-white mb-4" />
+        </section>
+
+        <section class="max-w-full mx-auto p-6 shadow-lg rounded-lg mb-6" style="background: linear-gradient(135deg, #27312e 0%, #3e4b47 100%)">
+            <div class="flex flex-col md:flex-row items-start">
+                <div class="md:w-1/2 mb-4 md:mb-0 flex justify-start p-4 pl-[0.2rem]">
+                    <img src="{{ url_for('static', filename='images/dishes/egg_toast.jpg') }}" alt="Recipe of the Day" class="rounded-lg max-w-full h-auto" />
+                </div>
+                <div class="md:w-1/2 px-6 flex flex-col justify-start mt-10 md:mt-24 mb-10">
+                    <h2 class="text-white uppercase text-sm mb-2 font-bold">Recipe of the Day</h2>
+                    <h1 class="text-3xl font-bold text-white mb-4" style="font-family: 'Georgia Pro Bold', sans-serif">Eggs on toast</h1>
+                    <p class="text-gray-300 mb-4" style="font-family: 'Georgia Pro Regular', sans-serif">A good lunch to get you through the rest of the day.</p>
+                    <div class="flex items-center mb-4">
+                        <span class="text-gray-300">30 minutes</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mx-auto mb-6">
+            <div class="relative">
+                <img src="{{ url_for('static', filename='images/dishes/steak_fries.jpg') }}" alt="Fall Recipes" class="w-full max-h-[700px] object-cover rounded-lg shadow-lg" />
+                <div class="absolute top-0 left-0 p-6 m-6 rounded-lg max-w-[550px]" style="background: linear-gradient(45deg, #27312e, #3e4b47)">
+                    <h2 class="text-2xl font-semibold text-white mb-4" style="font-family: 'Georgia Pro Bold', sans-serif">Winter is here!<h2>
+                    <p class="text-gray-300" style="font-family: 'Georgia Pro Regular', sans-serif">Warm up whilst enjoying great meals!</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-lg text-white font-semibold mb-2" style="font-family: 'Georgia Pro Bold', sans-serif">FIND YOUR MEAL</h2>
+            <hr class="border-b border-white mb-4" />
+            <button id="dietDropdownBtn" class="px-4 py-2 bg-[#27312e] text-white rounded">Select Diet Filters</button>
+            <!-- Diet Filter Section -->
+            <div class="mb-4">
+                <!-- Dropdown for diet filters -->
+                <div id="dietDropdownMenu" class="hidden absolute bg-[#27312e] mt-2 rounded shadow-lg p-2 w-64 z-10">
+                    {% for diet in diets %}
+                        <button class="diet-filter-btn block w-full text-left px-4 py-2 text-white hover:bg-[#1f2624]" data-diet="{{ diet[0] }}">
+                            {{ diet[1] }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="recipe-grid-container">
+                <div class="recipe-grid" id="recipeGrid">
+                    {% for recipe in recipes %}
+                        <a href="{{ url_for('recipe_detail', recipe_id=recipe[0]) }}" class="recipe-card {% if loop.index > 6 %}hidden{% endif %}" data-diets="{{ recipe[6] | join(',') }}">
+                            <img src="{{ url_for('static', filename='images/dishes/' + recipe[3]) }}" alt="{{ recipe[1] }}" />
+                            <div class="overlay">
+                                <h3 class="recipe-title">{{ recipe[1] }}</h3>
+                                <p class="recipe-time">{{ recipe[2] }} mins</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center text-white py-8">
+        <p>&copy; Nourish 2024</p>
+    </footer>
+
+    <script>
+        // Toggle diet dropdown
+        document.getElementById('dietDropdownBtn').addEventListener('click', function () {
+            document.getElementById('dietDropdownMenu').classList.toggle('active');
+        });
+
+        // Show/hide recipes based on selected diet
+        document.querySelectorAll('.diet-filter-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var selectedDiet = this.getAttribute('data-diet');
+                document.querySelectorAll('.recipe-card').forEach(function (recipe) {
+                    if (recipe.getAttribute('data-diets').includes(selectedDiet)) {
+                        recipe.classList.remove('hidden');
+                    } else {
+                        recipe.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

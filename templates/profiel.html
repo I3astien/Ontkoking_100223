@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: "Georgia Pro Bold";
+            src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Bold.ttf') }}") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Georgia Pro Regular";
+            src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Regular.ttf') }}") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-image: url("{{ url_for('static', filename='images/backgrounds/b2.png') }}");
+            background-size: cover;
+            background-position: center;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .recipe-grid-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .recipe-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .recipe-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        .recipe-card {
+            background-color: black;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+            height: 448px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .recipe-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .recipe-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, transparent, rgba(39, 49, 46, 0.8));
+            padding: 1rem;
+            color: white;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .recipe-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .recipe-card:hover .overlay {
+            transform: scale(1.05);
+        }
+
+        .recipe-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+
+        .recipe-time {
+            font-size: 0.875rem;
+        }
+
+        .recipe-card.hidden {
+            display: none;
+        }
+
+        #dietDropdownMenu {
+            display: none;
+            position: absolute;
+            max-height: 200px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        #dietDropdownMenu.active {
+            display: block;
+        }
+
+        .diet-filter-btn {
+            transition: background-color 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen overflow-y-hidden">
+    <header class="flex justify-between items-center p-4 pb-0">
+        <div class="flex items-center space-x-8">
+            <a href="/dailyhome2">
+                <h1 class="text-4xl font-bold text-[#fbfbfb]">NOURISH</h1>
+            </a>
+            <div class="items-center space-x-4 hidden sm:flex">
+                <a href="/add_recipe" class="px-4 py-2 rounded-lg bg-[#27312e] text-white transition duration-300 hover:bg-[#4e1616]">Add Recipe</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-4 h-full overflow-y-auto">
+        <!-- Welcome Section -->
+        <section class="mb-6 text-center">
+            <hr class="border-b border-white mb-4" />
+            <h2 class="text-5xl mt-24 font-bold text-white" style="font-family: 'Georgia Pro Bold', sans-serif">Welcome, {{ username }}!</h2>
+            <p class="text-xl text-gray-300 mt-2">We're happy to see you here! Here are your recipes:</p>
+        </section>
+
+        <!-- Recipes Section -->
+        <section>
+            <h2 class="text-lg mt-24 text-white font-semibold mb-2" style="font-family: 'Georgia Pro Bold', sans-serif">YOUR RECIPES</h2>
+            <hr class="border-b border-white mb-4" />
+            <div class="recipe-grid-container">
+                <div class="recipe-grid" id="recipeGrid">
+                    {% if recipes %}
+                        {% for recipe in recipes %}
+                            <div class="recipe-card {% if loop.index > 6 %}hidden{% endif %}" data-diets="{{ recipe[6] | join(',') }}">
+                                <img src="{{ url_for('static', filename='images/dishes/' + recipe[3]) }}" alt="{{ recipe[1] }}" />
+                                <div class="overlay">
+                                    <h3 class="recipe-title">{{ recipe[1] }}</h3>
+                                    <p class="recipe-time">{{ recipe[2] }} mins</p>
+                                    <div class="flex justify-between mt-2">
+                                        <a href="{{ url_for('edit_recipe', recipe_id=recipe[0]) }}" class="bg-blue-500 text-white rounded px-2 py-1">Edit</a>
+                                        <form action="{{ url_for('delete_recipe', recipe_id=recipe[0]) }}" method="POST">
+                                            <button type="submit" class="bg-red-500 text-white rounded px-2 py-1">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div id="noRecipesMessage" class="w-full h-[448px] flex items-center justify-center bg-transparent text-white text-center rounded-lg" style="background: linear-gradient(135deg, #27312e 0%, #3e4b47 100%)">
+                            <p class="text-2xl font-bold">What? No recipes! Add one!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <div class="mt-7 ml-2">
+            <a href="/logout" class="bg-red-500 text-white rounded px-4 py-2">Log Out</a>
+        </div>
+    </main>
+</body>
+</html>

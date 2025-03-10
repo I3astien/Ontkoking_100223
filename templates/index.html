@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NOURISH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @font-face {
+        font-family: "Georgia Pro Bold";
+        src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Bold.ttf') }}")
+          format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "Georgia Pro Regular";
+        src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Regular.ttf') }}")
+          format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        background-image: url("{{ url_for('static', filename='images/backgrounds/b1.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.336);
+        z-index: 1;
+      }
+
+      .main_headline_font {
+        font-family: "Georgia Pro Bold", sans-serif;
+        position: relative;
+        z-index: 2;
+      }
+
+      .supporting_text_font {
+        font-family: "Georgia Pro Regular";
+        position: relative;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body class="flex items-start justify-start min-h-screen bg-gray-900 p-12">
+    <div class="overlay"></div>
+    <div class="flex flex-col relative">
+      <div class="flex items-center space-x-2 z-20">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#fbfbfb]">NOURISH</h1>
+      </div>
+
+      <div class="main_headline_font">
+        <h2
+          class="text-[3rem] md:text-[5rem] lg:text-[7rem] font-bold text-white mt-32 md:mt-48 lg:mt-64 leading-tight"
+        >
+          <div class="leading-none">You came to</div>
+          <div class="leading-none">the right place.</div>
+        </h2>
+      </div>
+
+      <div class="supporting_text_font">
+        <p class="text-base md:text-lg lg:text-xl text-white mt-4 md:mt-6">
+          Great and simple recipes.<br />
+          Quick dining.
+        </p>
+      </div>
+
+      <a class="z-20" href="/dailyhome">
+        <button
+          class="mt-8 md:mt-12 px-6 py-2 text-white bg-[#27312e] hover:bg-[#4e1616] transition duration-300 rounded w-[10rem]"
+        >
+          Get Started
+        </button>
+      </a>
+    </div>
+  </body>
+</html>

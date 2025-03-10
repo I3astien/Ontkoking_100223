@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Recipe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: "Georgia Pro Bold";
+            src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Bold.ttf') }}") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Georgia Pro Regular";
+            src: url("{{ url_for('static', filename='fonts/Georgia Pro/GeorgiaPro-Regular.ttf') }}") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-image: url("{{ url_for('static', filename='images/backgrounds/b2.png') }}");
+            background-size: cover;
+            background-position: center;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="flex justify-between items-center p-4 pb-0">
+        <div class="flex items-center space-x-8">
+            <h1 class="text-4xl font-bold text-[#fbfbfb]">NOURISH</h1>
+            <a href="/add_recipe" class="px-4 py-2 rounded-lg bg-[#27312e] text-white transition duration-300 hover:bg-[#4e1616]">Add Recipe</a>
+        </div>
+    </header>
+
+    <main class="p-4 pb-20">
+        <section>
+            <hr class="border-b border-white mb-4" />
+        </section>
+
+        <form method="POST" action="{{ url_for('edit_recipe', recipe_id=recipe['id']) }}">
+            <section class="max-w-full mx-auto p-6 shadow-lg rounded-lg mb-6" style="background: linear-gradient(135deg, #27312e 0%, #3e4b47 100%)">
+                <div class="flex flex-col md:flex-row items-start">
+                    <div class="md:w-1/3 mb-4 md:mb-0 flex justify-start p-4 pl-[0.5rem]">
+                        <img src="{{ url_for('static', filename='images/dishes/' + recipe['image']) }}" alt="{{ recipe['name'] }}" class="rounded-lg max-w-auto h-[400px]" />
+                    </div>
+                    <div class="md:w-2/3 px-4 flex flex-col justify-start mt-10 md:mt-24 mb-10">
+                        <h2 class="text-white uppercase text-sm mb-2 font-bold">Recipe</h2>
+                        <input type="text" name="name" value="{{ recipe['name'] }}" class="text-3xl font-bold text-white mb-4 bg-transparent border-b border-gray-300 focus:outline-none" style="font-family: 'Georgia Pro Bold', sans-serif" />
+                        <div class="text-gray-300">
+                            <input type="number" name="time" value="{{ recipe['time'] }}" class="bg-transparent border-b border-gray-300 focus:outline-none" /> minutes
+                        </div>
+                    </div>
+                </div>
+            </section>        
+
+            <section class="max-w-full mx-auto p-6 shadow-lg rounded-lg mb-6">
+                <h2 class="text-white text-xl font-bold mb-4">Ingredients</h2>
+                <textarea name="ingredients" class="text-gray-300 pl-5 w-full bg-transparent border border-gray-300 rounded-lg focus:outline-none" rows="5">{{ recipe['ingredients'] }}</textarea>
+            </section>
+
+            <section class="max-w-full mx-auto p-6 shadow-lg rounded-lg mb-6">
+                <h2 class="text-white text-xl font-bold mb-4">Instructions</h2>
+                <textarea name="instructions" class="text-gray-300 pl-5 w-full bg-transparent border border-gray-300 rounded-lg focus:outline-none" rows="10">{{ recipe['instructions'] }}</textarea>
+            </section>
+
+            <!-- Back and Confirm Buttons -->
+            <div class="flex space-x-4 fixed bottom-4 left-4">
+                <a href="javascript:history.back()" class="px-4 py-2 bg-[#27312e] text-white rounded-lg transition duration-300 hover:bg-[#4e1616]">Back</a>
+                <button type="submit" class="px-4 py-2 bg-[#27312e] text-white rounded-lg transition duration-300 hover:bg-[#4e1616]">Confirm</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
